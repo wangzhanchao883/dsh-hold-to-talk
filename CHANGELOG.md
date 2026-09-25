@@ -32,6 +32,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `buildSettingsSchema()` 与 `applyConfig()`(仅被已删除的设置注册块调用)。
 - README 中"设置面板"相关的两处配置说明(英/中)。
+- `cordis.patch.yml` 顶部两行同样已失效的注释(声称 config 对应 settings schema、
+  设置面板写 settings.yaml 优先级更高)。 / The two stale comment lines at the top of
+  `cordis.patch.yml` that still claimed the values map onto a settings schema and
+  can be overridden from the settings panel.
 
 ## [0.1.2] - 2026-09-11
 
