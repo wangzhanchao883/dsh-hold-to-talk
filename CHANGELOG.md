@@ -6,6 +6,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 本文件记录本项目所有值得注意的改动。格式参考 Keep a Changelog,版本号遵循语义化版本。
 
+## [0.1.3] - 2026-09-25
+
+### Fixed / 修复
+
+- **兼容 DSH 0.1.7 / DSH 0.1.7 compatibility.** DSH 0.1.7 移除了旧设置契约,
+  本插件原先调用 `settings.register(ns, schema, { base })` 注册设置命名空间,
+  在 0.1.7 上不再生效。由于该设置面板实际从未被使用,这里直接移除注册块而非
+  重写 —— **host 端功能与浏览器端行为完全不变**。 / DSH 0.1.7 replaced the old
+  settings contract; the previous `settings.register(ns, schema, { base })`
+  call no longer took effect. Since the panel was never used in practice, the
+  registration block was removed rather than rewritten — host and browser
+  behaviour are unchanged.
+- 插件参数改为从插件条目的 `config`(即 `cordis.patch.yml` 的 `insert[].config`)
+  读取。此前 `apply()` 忽略了第二个参数,**该段配置实际从未生效**,一直只有硬编码
+  默认值在起作用;现在它按文档描述生效了。 / Plugin options are now read from
+  the entry's `config`. Previously `apply()` ignored its second argument, so the
+  documented `cordis.patch.yml` block had no effect at all; it works now.
+- 移除 `dsh.client.inject` 里失效的 `@deepseek-ai/dsh-client-runtime` 声明 ——
+  该包自 0.1.5 起未再发布,Web 端组合器只会静默跳过它。 / Removed the dead
+  `@deepseek-ai/dsh-client-runtime` entry; that package has published nothing
+  since 0.1.5 and the web bundle resolver silently skips it.
+
+### Removed / 移除
+
+- `buildSettingsSchema()` 与 `applyConfig()`(仅被已删除的设置注册块调用)。
+- README 中"设置面板"相关的两处配置说明(英/中)。
+
 ## [0.1.2] - 2026-09-11
 
 ### Added / 新增

@@ -2,8 +2,10 @@
 # 安装本包到 web profile 后,host 端加载主入口(长按语音输入:HTTP 路由 + 本地
 # SenseVoice 识别引擎 + 设置命名空间)。浏览器半身由 dsh.client 声明,随页面加载。
 #
-# 下面 config 里的每一项都对应 host 侧 settings schema 的同名扁平字段;用户层
-# (设置面板写 settings.yaml)优先级高于这里的 base 值。
+# 下面 config 里的每一项都是本插件 apply(ctx, entryConfig) 收到的配置;这就是
+# 唯一的配置入口。DSH 0.1.7 起设置面板改为 schema 驱动的自动表单,旧的
+# settings.register(ns, schema, {base}) 命名空间契约已废弃 → 本插件不注册设置,
+# 要改参数直接改这里(config 值即最终值,没有更高的用户层覆盖)。
 - insert:
     - id: dsh-hold-to-talk
       name: dsh-hold-to-talk

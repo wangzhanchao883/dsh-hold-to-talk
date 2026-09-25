@@ -39,16 +39,6 @@ const ctx = {
 				},
 			});
 		}
-		if (deps.includes("settings")) {
-			// 模拟「用户没做任何覆盖」:base 数据层原样生效
-			callback({
-				settings: {
-					register(_ns, _schema, options) {
-						return { get: () => null, watch: () => () => {} };
-					},
-				},
-			});
-		}
 	},
 	effect(fn) {
 		fn();

@@ -1,6 +1,6 @@
 {
   "name": "dsh-hold-to-talk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Hold-to-talk voice input for the DeepSeek Harness Web composer: hold the mouse on the input box, speak, see the running transcript float above it, release to insert the text into the draft. Recognition runs locally (SenseVoice via sherpa-onnx) — no API key, offline, audio never leaves the machine. 微信电脑版同款长按语音输入:在输入框上按住鼠标说话,浮层里边说边出字,松手把文字写进输入框,上滑取消;识别在本机跑,免密钥、离线、音频不出本机。",
   "type": "module",
   "main": "lib/index.js",
@@ -23,7 +23,6 @@
     "client": {
       "platform": "web",
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }

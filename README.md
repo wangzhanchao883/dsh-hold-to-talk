@@ -86,8 +86,7 @@ The model is cached under `~/.dsh/hold-to-talk/models/` (change with `modelDir`)
 
 ### Configuration
 
-Namespace `dsh-hold-to-talk` (written to `settings.yaml` by the Web settings
-panel), or override in the profile's `cordis.patch.yml`:
+Set the plugin entry's `config` in the profile's `cordis.patch.yml`:
 
 ```yaml
 - id: dsh-hold-to-talk
@@ -107,7 +106,13 @@ panel), or override in the profile's `cordis.patch.yml`:
     modelDir: ""             # empty = ~/.dsh/hold-to-talk/models
 ```
 
-Priority: settings panel > `cordis.patch.yml` > plugin defaults.
+Priority: `cordis.patch.yml` > plugin defaults.
+
+> **DSH 0.1.7 note.** Up to 0.1.5 these options were also editable from the Web
+> settings panel (through a `settings.yaml` namespace). DSH 0.1.7 replaced that
+> API with a schema-driven config-form service, so the panel entry no longer
+> exists; editing `config` in `cordis.patch.yml` is the supported way. Host
+> behaviour is otherwise unchanged.
 
 ### How it works
 
@@ -281,7 +286,7 @@ npm run model:fetch
 
 ### 配置
 
-设置命名空间 `dsh-hold-to-talk`（Web 设置面板写入 `settings.yaml`），或在 profile 的 `cordis.patch.yml` 里按 id 覆盖：
+在 profile 的 `cordis.patch.yml` 里按 id 覆盖插件条目的 `config`：
 
 ```yaml
 - id: dsh-hold-to-talk
@@ -301,7 +306,12 @@ npm run model:fetch
     modelDir: ""             # 留空 = ~/.dsh/hold-to-talk/models
 ```
 
-优先级：设置面板 > `cordis.patch.yml` > 插件默认值。
+优先级：`cordis.patch.yml` > 插件默认值。
+
+> **DSH 0.1.7 说明。** 0.1.5 及以前这些参数还能在 Web 设置面板里改（写入
+> `settings.yaml` 的设置命名空间）。0.1.7 把该套 API 换成了 schema 驱动的配置
+> 表单服务，设置面板入口已不存在，改 `cordis.patch.yml` 里的 `config` 是现在
+> 唯一支持的途径。插件其余行为没有变化。
 
 ### 使用
 
