@@ -1,0 +1,57 @@
+# 通过 npm Trusted Publishing (OIDC) 发布 —— 不需要任何长期令牌，也不会过期。
+#
+# 前置（只需在 npmjs.com 做一次，每个包一次）：
+#   https://www.npmjs.com/package/<包名>/settings → Trusted Publisher → GitHub Actions
+#     Organization or user : wangzhanchao883
+#     Repository           : <仓库名>
+#     Workflow filename    : publish.yml   （只填文件名，大小写敏感，含扩展名）
+#     Environment name     : 留空
+#     允许的动作            : 勾上 npm publish
+#
+# 发布方式：改 package.json 版本号 → commit → 打同名 tag 推上去
+#     git tag v0.1.4 && git push origin v0.1.4
+#
+# 注意：千万不要把任何 NPM_TOKEN / NODE_AUTH_TOKEN 配到这个仓库，
+#      否则 npm 会优先使用令牌、放弃 OIDC 通道。
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write   # OIDC 认证必需，缺了直接失败
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false   # 发布构建一律不用缓存
+
+      # Trusted Publishing 要求 npm CLI >= 11.5.1、Node >= 22.14
+      - name: Ensure npm >= 11.5.1
+        run: npm install -g npm@latest
+
+      # 防止 tag 与 package.json 版本不一致时发错版本
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::tag $GITHUB_REF_NAME 与 package.json 的 $PKG_VERSION 不一致"
+            exit 1
+          fi
+          echo "版本一致: $PKG_VERSION"
+
+      # 本仓库无构建步骤，发布所需文件全部已提交，故不需要 npm ci
+      - name: Publish with OIDC
+        run: npm publish --access public
