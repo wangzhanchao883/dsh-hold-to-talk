@@ -52,6 +52,24 @@ jobs:
           fi
           echo "版本一致: $PKG_VERSION"
 
+      # ===== 临时诊断步：定位 OIDC 信任关系为何不匹配（验证通过后删除）=====
+      - name: Diagnose OIDC identity and trust
+        if: always()
+        run: |
+          RESP=$(curl -sS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org")
+          JWT=$(printf '%s' "$RESP" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).value))')
+          echo "==== [DIAG] OIDC 令牌声明 ===="
+          printf '%s' "$JWT" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const b=s.split(".")[1].replace(/-/g,"+").replace(/_/g,"/");const c=JSON.parse(Buffer.from(b,"base64").toString());console.log(JSON.stringify(c,null,2))})'
+          echo "==== [DIAG] 直接探测 npm 令牌交换接口 ===="
+          curl -sS -o exchange.json -w "HTTP=%{http_code}\n" -X POST \
+            -H "Authorization: Bearer $JWT" \
+            "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/dsh-hold-to-talk" || true
+          echo "---- 响应体 ----"
+          cat exchange.json 2>/dev/null || echo "(无响应体)"
+          echo
+          echo "==== [DIAG] npm 自身视角的交换过程 ===="
+          npm config get registry
+
       # 本仓库无构建步骤，发布所需文件全部已提交，故不需要 npm ci
       - name: Publish with OIDC
-        run: npm publish --access public
+        run: npm publish --access public --loglevel silly
