@@ -73,3 +73,13 @@ jobs:
       # 本仓库无构建步骤，发布所需文件全部已提交，故不需要 npm ci
       - name: Publish with OIDC
         run: npm publish --access public --loglevel silly
+
+      # ===== 临时诊断步 2：npm stage publish 按官方规则「永远允许」。
+      #       用它一刀切开两种情况：配置不存在（stage 也 404） vs 只勾了 stage 权限（stage 成功）。
+      - name: Diagnose allowed actions via stage probe
+        if: failure()
+        run: |
+          echo "==== [DIAG2] npm stage publish 试探 ===="
+          npm stage publish --access public 2>&1 | tail -40 || true
+          echo "==== [DIAG2] 暂存列表 ===="
+          npm stage list 2>&1 | tail -30 || true
