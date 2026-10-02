@@ -6,6 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 本文件记录本项目所有值得注意的改动。格式参考 Keep a Changelog,版本号遵循语义化版本。
 
+## [0.1.4] - 2026-10-02
+
+### Changed / 变更
+
+- **发布链路迁移到 npm Trusted Publishing (OIDC)。** 不再依赖长期 npm 令牌:新增
+  `.github/workflows/publish.yml`,推 `v*` 标签即由 GitHub Actions 通过 OIDC 换取
+  一次性短令牌直接发布,并自动附带 provenance 来源证明;工作流同时强校验 tag 与
+  `package.json` 版本号一致。 / Publishing moved to npm Trusted Publishing (OIDC).
+  No long-lived npm token is involved: pushing a `v*` tag makes GitHub Actions
+  publish with a short-lived OIDC token and generate provenance automatically.
+  The workflow also hard-fails when the tag and `package.json` version disagree.
+- 本版本**除版本号外无代码改动**,用于验证新的发布通道端到端可用。 / No functional
+  changes — this release exists to validate the new publishing pipeline end to end.
+
 ## [0.1.3] - 2026-09-25
 
 ### Fixed / 修复
